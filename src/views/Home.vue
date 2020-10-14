@@ -10,7 +10,7 @@
         </div>
         <div class="col">
           <router-link to="/foods" class="btn btn-success float-right"
-            ><b-icon-eye></b-icon-eye> Semua</router-link
+            ><b-icon-eye></b-icon-eye> Lihat Semua</router-link
           >
         </div>
       </div>
@@ -55,12 +55,8 @@ export default {
   mounted() {
     axios
       .get(`${process.env.VUE_APP_BASE_URL}best-products`)
-      .then((response) => {
-        this.setProducts(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      .then((response) => this.setProducts(response.data))
+      .catch((error) => console.log(error));
   },
 };
 </script>
