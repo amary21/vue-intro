@@ -55,7 +55,6 @@ export default {
   },
   data() {
     return {
-      baseUrl: process.env.VUE_APP_BASE_URL,
       products: [],
       search: "",
     };
@@ -66,14 +65,14 @@ export default {
     },
     searchFood() {
       axios
-        .get(`${this.baseUrl}products?q=${this.search}`)
+        .get(`products?q=${this.search}`)
         .then((response) => this.setProducts(response.data))
         .catch((error) => console.log(error));
     },
   },
   mounted() {
     axios
-      .get(`${this.baseUrl}products`)
+      .get("products")
       .then((response) => this.setProducts(response.data))
       .catch((error) => console.log(error));
   },

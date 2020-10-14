@@ -46,7 +46,7 @@
                   <th>{{ index + 1 }}</th>
                   <td>
                     <img
-                      :src="baseUrl + keranjang.products.gambar"
+                      :src="path + keranjang.products.gambar"
                       class="img-fluid shadow"
                       width="250"
                       :alt="keranjang.products.nama"
@@ -89,6 +89,33 @@
           </div>
         </div>
       </div>
+
+      <!-- form Chekcout -->
+      <div class="row justify-content-end">
+        <div class="col-md-4">
+          <form class="mt-4" v-on:submit.prevent>
+            <div class="form-group">
+              <label for="nama">Nama :</label>
+              <input type="text" class="form-control" v-model="pesan.nama" />
+            </div>
+            <div class="form-group">
+              <label for="noMeja">Nomor Meja :</label>
+              <input
+                type="number"
+                class="form-control"
+                v-model="pesan.noMeja"
+              />
+            </div>
+            <button
+              type="submit"
+              class="btn btn-success float-right"
+              @click="checkout"
+            >
+              <b-icon-cart></b-icon-cart> Pesan
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -104,8 +131,9 @@ export default {
   },
   data() {
     return {
-      baseUrl: process.env.VUE_APP_BASE_URL,
+      path: axios.defaults.baseURL,
       keranjangs: [],
+      pesan: {},
     };
   },
   methods: {
@@ -114,13 +142,13 @@ export default {
     },
     getKeranjang() {
       axios
-        .get(`${this.baseUrl}keranjangs`)
+        .get("keranjangs")
         .then((response) => this.setKeranjang(response.data))
         .catch((error) => console.log(error));
     },
     hapusKeranjang(id) {
       axios
-        .delete(`${this.baseUrl}keranjangs/${id}`)
+        .delete(`keranjangs/${id}`)
         .then(() => {
           this.$toast.error("Sukses Hapus Keranjang", {
             type: "error",
@@ -132,6 +160,37 @@ export default {
           this.getKeranjang();
         })
         .catch((error) => console.log(error));
+    },
+    checkout() {
+      if (this.pesan.nama && this.pesan.noMeja) {
+        this.pesan.keranjangs = this.keranjangs;
+        axios
+          .post("pesanans", this.pesan)
+          .then(() => {
+            // hapus semua keranjangs
+            this.keranjangs.map((item) => {
+              return axios
+                .delete(`keranjangs/${item.id}`)
+                .catch((error) => console.log(error));
+            });
+
+            this.$router.push({ path: "/pesanan-sukses" });
+            this.$toast.success("Sukses Dipesan", {
+              type: "success",
+              position: "top-right",
+              duration: 3000,
+              dismissible: true,
+            });
+          })
+          .catch((error) => console.log(error));
+      } else {
+        this.$toast.error("Nama dan Nomor Meja Harus diisi", {
+          type: "error",
+          position: "top-right",
+          duration: 3000,
+          dismissible: true,
+        });
+      }
     },
   },
   mounted() {

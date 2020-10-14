@@ -24,7 +24,7 @@
       <div class="row">
         <div class="col-md-6">
           <img
-            :src="baseUrl + product.gambar"
+            :src="path + product.gambar"
             class="img-fluid shadow mb-3"
             :alt="product.nama"
           />
@@ -75,7 +75,7 @@ export default {
   },
   data() {
     return {
-      baseUrl: process.env.VUE_APP_BASE_URL,
+      path: axios.defaults.baseURL,
       product: [],
       pesan: {},
     };
@@ -88,7 +88,7 @@ export default {
       if (this.pesan.jumlah_pemesanan) {
         this.pesan.products = this.product;
         axios
-          .post(`${this.baseUrl}keranjangs`, this.pesan)
+          .post('keranjangs', this.pesan)
           .then(() => {
             this.$router.push({ path: "/keranjang" });
             this.$toast.success("Sukses Masuk Keranjang", {
@@ -111,7 +111,7 @@ export default {
   },
   mounted() {
     axios
-      .get(`${this.baseUrl}products/${this.$route.params.id}`)
+      .get(`products/${this.$route.params.id}`)
       .then((response) => this.setProduct(response.data))
       .catch((error) => console.log(error));
   },

@@ -44,7 +44,6 @@ export default {
   },
   data() {
     return {
-      baseUrl: process.env.VUE_APP_BASE_URL,
       products: [],
     };
   },
@@ -55,7 +54,7 @@ export default {
   },
   mounted() {
     axios
-      .get(`${this.baseUrl}best-products`)
+      .get("best-products")
       .then((response) => this.setProducts(response.data))
       .catch((error) => console.log(error));
   },
