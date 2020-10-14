@@ -21,4 +21,20 @@
 .card-img-top{
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
+    height: 270px;
+    object-fit: cover;
+}
+
+.breadcrumb{
+    background-color: transparent;
+    padding: 0;
+}
+
+.breadcrumb-item.active{
+    font-weight: bold;
+    color: black;
+}
+
+.img-fluid{
+    border-radius: 15px;
 }
