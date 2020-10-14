@@ -3,7 +3,7 @@
     <Navbar />
     <div class="container">
       <!-- breadcrumb -->
-      <div class="row mt-5">
+      <div class="row mt-4">
         <div class="col">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -25,7 +25,7 @@
         <div class="col-md-6">
           <img
             :src="baseUrl + product.gambar"
-            class="img-fluid shadow"
+            class="img-fluid shadow mb-3"
             :alt="product.nama"
           />
         </div>
@@ -37,19 +37,24 @@
           <h4>
             Harga : <strong>Rp. {{ product.harga }}</strong>
           </h4>
-          <form class="mt">
+          <form class="mt-4" v-on:submit.prevent>
             <div class="form-group">
               <label for="jumlah_pemesanan">Jumlah Pesan</label>
-              <input type="number" class="form-control" />
+              <input
+                type="number"
+                class="form-control"
+                v-model="pesan.jumlah_pemesanan"
+              />
             </div>
             <div class="form-group">
               <label for="keterangan">Keterangan</label>
               <textarea
+                v-model="pesan.keterangan"
                 class="form-control"
                 placeholder="keterangan seperti : Pedas, Nasi Setengah..."
               ></textarea>
             </div>
-            <button type="submit" class="btn btn-success">
+            <button type="submit" class="btn btn-success" @click="pemesanan">
               <b-icon-cart></b-icon-cart> Pesan
             </button>
           </form>
@@ -72,11 +77,36 @@ export default {
     return {
       baseUrl: process.env.VUE_APP_BASE_URL,
       product: [],
+      pesan: {},
     };
   },
   methods: {
     setProduct(data) {
       this.product = data;
+    },
+    pemesanan() {
+      if (this.pesan.jumlah_pemesanan) {
+        this.pesan.products = this.product;
+        axios
+          .post(`${this.baseUrl}keranjangs`, this.pesan)
+          .then(() => {
+            this.$router.push({ path: "/keranjang" });
+            this.$toast.success("Sukses Masuk Keranjang", {
+              type: "success",
+              position: "top-right",
+              duration: 3000,
+              dismissible: true,
+            });
+          })
+          .catch((error) => console.log(error));
+      } else {
+        this.$toast.error("Jumlah Pesanan Harus diisi", {
+          type: "error",
+          position: "top-right",
+          duration: 3000,
+          dismissible: true,
+        });
+      }
     },
   },
   mounted() {
